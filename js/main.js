@@ -116,7 +116,7 @@
         const introTitles = firstSection
             ? Array.from(firstSection.querySelectorAll(".main_title"))
             : [];
-        const introImage = firstSection?.querySelector(".visual_img_box > img");
+        const introImage = firstSection?.querySelector(".visual_img_box > .main_visual_img");
 
         const INTRO_TITLE_MAX_SHIFT_PX = 140; // 타이틀 이동 기반치(px)
         const INTRO_MIN_SCALE_CURVE = 0.85; // 계산용 목표치
@@ -640,8 +640,8 @@
         // -----------------------------------------------------
         // I) PR 가로 스와이퍼 (#pr .fp_section_contents .swiper)
         //     - 자동재생 없음, 터치/마우스 드래그 가능
-        //     - 불릿 페이징
-        //     - 각 슬라이드 내부 .indicator 의 current/total 갱신
+        //     - 불릿 페이징 + 각 슬라이드 내부 indicator 갱신
+        //     - 슬라이드 내부 control(prev/next) 버튼으로 제어
         // -----------------------------------------------------
         (function initPRSwiper() {
             const prHost = document.querySelector("#pr .fp_section_contents .swiper");
@@ -674,9 +674,10 @@
             // 두 자리 포맷터
             const pad2 = (n) => String(n).padStart(2, "0");
 
+            // Swiper 인스턴스
             const prSwiper = new Swiper(prHost, {
                 direction: "horizontal",
-                slidesPerView: 1,
+                slidesPerView: 1.15,
                 spaceBetween: 24,
                 loop: false,
                 speed: 600,
@@ -686,10 +687,10 @@
                 nested: true, // fullpage와 충돌 방지
                 touchAngle: 30,
                 threshold: 6,
-                // pagination: {
-                //     el: pagination,
-                //     clickable: true,
-                // },
+                pagination: {
+                    el: pagination,
+                    clickable: true,
+                },
                 on: {
                     init() {
                         const total = this.slides.length;
@@ -710,7 +711,7 @@
                         const total = this.slides.length;
                         const idx = (this.realIndex ?? this.activeIndex ?? 0) + 1;
 
-                        // active 슬라이드의 current만 갱신
+                        // active 슬라이드 indicator 갱신
                         const activeSlide = this.slides[this.activeIndex];
                         if (activeSlide) {
                             const cur = activeSlide.querySelector(".indicator .current");
@@ -721,6 +722,49 @@
                     },
                 },
             });
+
+            // 내부 control 버튼 이벤트 바인딩
+            prHost.addEventListener("click", (e) => {
+                if (e.target.closest(".control .prev")) {
+                    e.preventDefault();
+                    prSwiper.slidePrev();
+                } else if (e.target.closest(".control .next")) {
+                    e.preventDefault();
+                    prSwiper.slideNext();
+                }
+            });
         })();
+
+        // Our Core Tec
+        $(function () {
+            // 모든 패널 숨김 + aria 보정
+            $("#tec .section_content_item .image_wrap + div").hide().attr("aria-hidden", "true");
+
+            // 첫 번째 패널은 열어둠
+            const $firstPanel = $("#tec .section_content_item").first().find(".image_wrap + div");
+            $firstPanel
+                .css({ display: "flex" }) // flex 유지
+                .show() // 보이게
+                .attr("aria-hidden", "false");
+
+            // hover(enter/leave) + 키보드 포커스까지 대응
+            $("#tec")
+                .on("mouseenter focusin", ".section_content_item", function () {
+                    const $panel = $(this).find(".image_wrap").first().next("div");
+                    $panel
+                        .css({ display: "flex" })
+                        .hide()
+                        .stop(true, true)
+                        .slideDown(500)
+                        .attr("aria-hidden", "false");
+                })
+                .on("mouseleave focusout", ".section_content_item", function (e) {
+                    // 자식으로 포커스 이동 시 바로 닫히지 않도록 보정
+                    if ($(this).has(e.relatedTarget).length) return;
+
+                    const $panel = $(this).find(".image_wrap").first().next("div");
+                    $panel.stop(true, true).slideUp(500).attr("aria-hidden", "true");
+                });
+        });
     }
 })();

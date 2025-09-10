@@ -39,7 +39,7 @@
 .flex.column {
     flex-direction: column;
 }
-.flex_1{
+.flex_1 {
     flex: 1;
 }
 /* align - start */
@@ -62,7 +62,8 @@
     font-weight: 600;
 }
 
-.text_divider {  /* <span class="text-dibider">|<span> 형태로 사용  */
+.text_divider {
+    /* <span class="text-dibider">|<span> 형태로 사용  */
     margin: 0 1em;
 }
 /* text & font - end */
@@ -172,10 +173,10 @@ header .gnb .btn_menu::after {
     background-color: var(--bk_95);
 }
 header .gnb .btn_menu::before {
-    top: 0.4375em; /* 7px */
+    top: 33.3%;
 }
 header .gnb .btn_menu::after {
-    top: 0.875em; /* 14px */
+    top: 66.6%;
 }
 
 /* ===== 전체 메뉴 (드로어/오버레이) ===== */
@@ -187,7 +188,6 @@ header .menu {
     width: 100vw;
     height: 100vh;
     padding: 9.4375em 3.125em 0; /* 151px 50px 0 */
-    color: var(--wt_70);
     background-color: var(--bk);
     inset: 0;
     z-index: 2000;
@@ -252,8 +252,30 @@ header .menu .menu_title {
     line-height: 1.2;
     font-weight: 100;
 }
-header .menu .sub_menu a {
+header .menu .sub_menu {
+    margin-top: 0.625em;
+}
+header .menu .sub_menu li a {
+    display: block;
+    padding: 0.75em 0;
+    color: var(--wt_70);
     font-weight: 600;
+}
+header .menu .sub_menu li a span {
+    position: relative;
+}
+header .menu .sub_menu li a span::after {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: -2px;
+    height: 1px;
+    width: 0%;
+    background-color: var(--wt_70);
+    transition: width 0.3s ease-in-out;
+}
+header .menu .sub_menu li a:hover span::after {
+    width: 100%;
 }
 
 /* // header */
@@ -265,7 +287,7 @@ footer {
 /* footer */
 .footer {
     min-height: 15em; /* 240px */
-    margin-top: 7.5em; /* 120px */ 
+    margin-top: 7.5em; /* 120px */
     padding: 0 3.125em; /* 0 50px */
     color: var(--wt);
     line-height: 1.5;

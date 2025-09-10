@@ -52,7 +52,7 @@ table {
 a, a:visited {
 	color: inherit;
 	text-decoration: none;
-	/* cursor: pointer; */
+	cursor: pointer;
 }
 button {
 	padding: 0;
