@@ -32,6 +32,19 @@
 .hide {
     display: none !important;
 }
+
+.mo_only {
+    display: none !important;
+}
+
+@media screen and (max-width: 720px) {
+    .pc_only {
+        display: none !important;
+    }
+    .mo_only {
+        display: block !important;
+    }
+}
 /* felx */
 .flex {
     display: flex;
@@ -94,6 +107,9 @@
 }
 
 /* button - end */
+
+/* margin - start */
+/* margin - end */
 /* // common */
 
 /* 사이트 전체 기본 폰트 적용 */
@@ -104,6 +120,12 @@ body {
     font-size: 0.833331vw; /* 1920px 기준 16px */
     font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
         "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
+}
+
+@media screen and (max-width: 720px) {
+    body {
+        font-size: 4.1vw;
+    }
 }
 body.no-scroll {
     /* overflow: hidden; */
@@ -265,7 +287,7 @@ header .menu .sub_menu li a span {
     position: relative;
 }
 header .menu .sub_menu li a span::after {
-    content: '';
+    content: "";
     display: block;
     position: absolute;
     bottom: -2px;
@@ -384,12 +406,113 @@ footer {
 }
 @media (max-width: 75em) {
     /* 1200px */
+
+    /* ===== Header 전체 ===== */
+    header {
+        padding: 2.75rem 1rem 0;
+    }
+    header.is-hidden {
+    }
+
+    /* ===== 로고 영역 ===== */
+    header h1 {
+    }
+    header h1 a {
+        height: 1.31rem;
+    }
+    header h1 img {
+    }
+
+    /* ===== GNB 네비게이션 ===== */
+    header .gnb {
+    }
+    header .gnb ul {
+        display: none;
+    }
+    header .gnb ul li {
+    }
+    header .gnb .btn_menu {
+        width: 1.875rem;
+        height: 1.31rem;
+    }
+    header .gnb .btn_menu::before,
+    header .gnb .btn_menu::after {
+        height: 2px;
+    }
+    header .gnb .btn_menu::before {
+    }
+    header .gnb .btn_menu::after {
+    }
+
+    /* ===== 전체 메뉴 (드로어/오버레이) ===== */
+    header .menu {
+        padding: 2.75rem 1rem;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 4rem;
+    }
+    header .menu.active {
+    }
+    header .menu .logo {
+        height: 1.31rem;
+        width: auto;
+    }
+    header .menu .bar {
+        position: absolute;
+        height: 80%;
+        top: 8rem;
+    }
+    header .menu .btn_menu_close {
+        width: 1.31rem;
+        height: 1.31rem;
+        right: 1rem;
+        top: 2.75rem;
+    }
+    header .menu .btn_menu_close::before,
+    header .menu .btn_menu_close::after {
+        width: 100%;
+    }
+    header .menu .btn_menu_close::before {
+    }
+    header .menu .btn_menu_close::after {
+    }
+    header .menu > ul {
+    }
+    header .menu > ul > li {
+    }
+    header .menu .menu_title {
+        font-size: 2rem;
+    }
+    header .menu .sub_menu {
+    }
+    header .menu .sub_menu li a {
+        font-size: 1rem;
+    }
+    header .menu .sub_menu li a span {
+    }
+    header .menu .sub_menu li a span::after {
+    }
+    header .menu .sub_menu li a:hover span::after {
+    }
+    .footer {
+        padding: 0 1rem;
+    }
+    .footer_cta {
+        width: 10.9rem;
+    }
     .footer_body {
     }
     .footer_logo {
     }
     .footer_note {
         text-align: left;
+    }
+    .footer_content {
+        width: 100%;
+    }
+    .footer_info_content,
+    .footer_copy {
+        font-size: 0.75rem;
     }
 }
 

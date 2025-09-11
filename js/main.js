@@ -107,9 +107,6 @@
 
         // -----------------------------------------------------
         // B-1) 첫 섹션 패럴럭스 상태/렌더 (초기화 금지 + 역방향 복원)
-        //  - .main_title 두 개 모두 Y이동 (오프셋이 vh 초과 시 반대방향으로 핑퐁)
-        //  - .visual_img_box > img : scale은 0.6 이하로 내려가지 않음
-        //  - scale이 0.6에 도달한 이후 남는 진행분은 top을 음수로 이동
         // -----------------------------------------------------
         let introProgress = 0; // 0 ~ vh
         const firstSection = sections[0];
@@ -118,13 +115,11 @@
             : [];
         const introImage = firstSection?.querySelector(".visual_img_box > .main_visual_img");
 
-        const INTRO_TITLE_MAX_SHIFT_PX = 140; // 타이틀 이동 기반치(px)
-        const INTRO_MIN_SCALE_CURVE = 0.85; // 계산용 목표치
-        const MIN_SCALE_CAP = 0.6; // 실제 최소 스케일
-        const EXTRA_TOP_MAX_PX = 220; // 캡 이후 top 최대 상승(px)
+        const INTRO_TITLE_MAX_SHIFT_PX = 140;
+        const INTRO_MIN_SCALE_CURVE = 0.85;
+        const MIN_SCALE_CAP = 0.6;
+        const EXTRA_TOP_MAX_PX = 220;
 
-        // scale 곡선
-        // ⚠️ 사용자 편집 내용 유지: slope를 3.5 - 0.85로 사용 중
         const SCALE_SLOPE = 3.5 - INTRO_MIN_SCALE_CURVE;
         const R_AT_MIN_SCALE = Math.max(0, Math.min(1, (1 - MIN_SCALE_CAP) / SCALE_SLOPE));
 
@@ -133,38 +128,28 @@
 
             const r = Math.max(0, Math.min(introProgress / vh, 1)); // 0~1
 
-            // 1) 타이틀 Y오프셋: offset*8이 vh를 넘으면 반대로 움직이도록 "핑퐁" 처리
-            const offset = Math.round(r * INTRO_TITLE_MAX_SHIFT_PX); // 기본 오프셋
-            const rawShift = offset * 15; // 사용자가 적용 중인 가중치
-            let pingpong; // 0 -> vh까지 증가, 그 이후엔 감소(반대방향)
-            if (rawShift <= vh / 1.3) {
-                pingpong = rawShift; // 정방향
-            } else {
-                // const overflow = rawShift - vh; // 초과분
-                // pingpong = Math.max(0, vh - overflow); // 역방향으로 되돌아감
-            }
-            // translateY: calc(50% - Xpx)
-            // X가 커질수록 위로 이동하는 현재 수식을 그대로 유지하고, X를 ping-pong 처리
+            // 타이틀 Y오프셋: 핑퐁 없이 멈춤(요청 반영)
+            const offset = Math.round(r * INTRO_TITLE_MAX_SHIFT_PX);
+            const rawShift = offset * 15;
+            let shift = rawShift <= vh / 1.3 ? rawShift : vh / 1.3;
+
             introTitles.forEach((el) => {
-                el.style.transform = `translate(-50%, calc(50% - ${pingpong}px))`;
+                el.style.transform = `translate(-50%, calc(50% - ${shift}px))`;
             });
 
-            // 2) 이미지 스케일 + top 리프트
-            const scaleRaw = 1 - r * SCALE_SLOPE; // 1 → (아래로 갈수록 감소)
+            // 이미지 스케일 + top 리프트
+            const scaleRaw = 1 - r * SCALE_SLOPE; // 1 → 감소
             if (r <= R_AT_MIN_SCALE) {
-                // 캡 도달 전: 순수 스케일만
                 introImage.style.transform = `scale(${scaleRaw})`;
                 introImage.style.position = "relative";
                 introImage.style.top = "0px";
             } else {
-                // 캡 고정 + 초과 진행분을 top으로 전환(음수)
-                const extraRatio = (r - R_AT_MIN_SCALE) / (1 - R_AT_MIN_SCALE); // 0~1
+                const extraRatio = (r - R_AT_MIN_SCALE) / (1 - R_AT_MIN_SCALE);
                 const lift = Math.round(extraRatio * EXTRA_TOP_MAX_PX);
                 introImage.style.transform = `scale(${MIN_SCALE_CAP})`;
                 introImage.style.position = "relative";
                 introImage.style.top = `${-lift * 3}px`;
             }
-            // introImage.style.willChange = 'transform, top'; // (선택) 성능 힌트
         }
 
         // sub_visual 스와이프 잠금/해제
@@ -184,7 +169,6 @@
             applyTransform();
             saveLastIndex(currentIndex);
 
-            // 자동 원복 없음: 진행도는 손대지 않고 렌더만 갱신
             updateIntroParallax();
 
             setTimeout(() => {
@@ -357,7 +341,6 @@
             }
         }
 
-        // sub 섹션일 때: sub가 델타를 소비하고, 엣지(첫/마지막)에서만 남은 델타를 fullpage로
         function routeDelta(deltaY) {
             if (currentIndex !== subIndex || !subSwiper) {
                 return { consumed: 0, remain: deltaY };
@@ -384,13 +367,10 @@
         // E) #fullpage 누적/스냅
         // -----------------------------------------------------
         function accumulate(deltaY) {
-            // 안전: sub/ fullpage 애니메 중이면 무시
             if ((currentIndex === subIndex && subAnimating) || animating) return;
 
-            // 첫 섹션이면 델타를 1/4로 축소
             const effDelta = currentIndex === 0 ? deltaY * FIRST_SECTION_SCROLL_FACTOR : deltaY;
 
-            // 첫 섹션 패럴럭스 진행도 업데이트 (섹션을 떠나도 introProgress 유지)
             if (currentIndex === 0) {
                 introProgress = Math.max(0, Math.min(introProgress + effDelta, vh));
                 updateIntroParallax();
@@ -408,7 +388,6 @@
             if (Math.abs(stack) >= vh) {
                 const goingDown = stack > 0;
 
-                // 마지막 섹션에서 아래 → 자유 스크롤
                 if (goingDown && currentIndex === sections.length - 1) {
                     Smooth.add(deltaY);
                     stack = 0;
@@ -445,11 +424,129 @@
             return false;
         }
 
+        // ─────────────────────────────────────────────────────
+        // J) TEC 세로 스와이퍼 (≤720px 전용)
+        //     - #tec .fp_section_contents 내부의 .swiper_item들을 래핑
+        //     - 인디케이터/네비 없음
+        //     - 휠 스크롤로만 이동(마우스휠/터치 모두)
+        //     - 가로>720px이면 파괴(destroy)
+        //     - #fullpage 전역 휠 캡처와 충돌 방지:
+        //         · tec 섹션에서 스와이퍼 엘리먼트 위의 입력은 fullpage가 가로채지 않음
+        // ─────────────────────────────────────────────────────
+        const tecSection = document.querySelector("#tec .fp_section_contents");
+        let tecSwiper = null;
+        let tecIndex = -1;
+        const tecMQ = window.matchMedia("(max-width: 720px)");
+
+        // TEC 마크업 보정: .fp_section_contents 자체를 호스트로 사용하고,
+        // 그 안의 .swiper_item들을 래핑해 swiper 구조로 만든다.
+        function ensureTecMarkup() {
+            if (!tecSection) return null;
+
+            // .fp_section_contents를 호스트로 승격
+            const host = tecSection;
+            host.classList.add("tec-swiper", "swiper");
+
+            // 이미 래핑돼 있으면 통과
+            if (host.querySelector(".swiper-wrapper")) return host;
+
+            const items = Array.from(host.querySelectorAll(":scope > .swiper_item"));
+            if (!items.length) return host;
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "swiper-wrapper";
+
+            items.forEach((item) => {
+                const slide = document.createElement("div");
+                slide.className = "swiper-slide";
+                slide.appendChild(item);
+                wrapper.appendChild(slide);
+            });
+
+            // 기존 자식 교체
+            while (host.firstChild) host.removeChild(host.firstChild);
+            host.appendChild(wrapper);
+            return host;
+        }
+
+        function mountTec() {
+            if (!tecSection || tecSwiper) return;
+            const host = ensureTecMarkup();
+            if (!host) return;
+
+            tecSwiper = new Swiper(host, {
+                direction: "vertical",
+                slidesPerView: "auto",
+                spaceBetween: 12,
+                speed: 450,
+                loop: false,
+                // 인디케이터/네비/페이징 없음
+                allowTouchMove: true,
+                simulateTouch: true,
+                nested: true, // 상위 스크롤과 충돌 최소화
+                touchAngle: 30,
+                threshold: 4,
+                freeMode: { enabled: true, momentum: true },
+                mousewheel: {
+                    enabled: true,
+                    forceToAxis: true, // 수직 휠만 반영
+                    sensitivity: 1.0,
+                    releaseOnEdges: true, // 엣지에서만 바깥으로
+                },
+                // scrollbar: { el: null }, // 명시적 비활성 (요청: UI 없음)
+                on: {
+                    // 스와이퍼가 바닥/천장에 있을 때만 이벤트를 상위로 넘기게 해줌
+                    reachEnd() {},
+                    reachBeginning() {},
+                },
+            });
+
+            tecIndex = sections.findIndex((sec) => sec.contains(tecSection));
+        }
+
+        function unmountTec() {
+            if (!tecSwiper) return;
+            tecSwiper.destroy(true, true);
+            tecSwiper = null;
+        }
+
+        function applyTecByMQ() {
+            if (!tecSection) return;
+            if (tecMQ.matches) mountTec();
+            else unmountTec();
+        }
+        applyTecByMQ();
+        if (tecMQ.addEventListener) tecMQ.addEventListener("change", applyTecByMQ);
+        else window.addEventListener("resize", applyTecByMQ);
+
         // -----------------------------------------------------
         // G) 입력 핸들러 (휠/터치)
+        //    ※ tec 스와이퍼 영역에서는 fullpage가 이벤트를 소비하지 않도록 우선 체크
         // -----------------------------------------------------
+        function wheelIsOnTec(e) {
+            if (!tecSwiper || currentIndex !== tecIndex) return false;
+            const target = e.target;
+            return !!(
+                target &&
+                target.closest &&
+                target.closest("#tec .fp_section_contents .tec-swiper")
+            );
+        }
+
+        function touchIsOnTec(e) {
+            if (!tecSwiper || currentIndex !== tecIndex) return false;
+            const touch = e.touches && e.touches[0];
+            if (!touch) return false;
+            // 터치 시작 지점 요소로 판별
+            const el = document.elementFromPoint(touch.clientX, touch.clientY);
+            return !!(el && el.closest && el.closest("#tec .fp_section_contents .tec-swiper"));
+        }
+
         function onWheel(e) {
             const deltaY = e.deltaY;
+
+            // ▶ TEC 영역: 스와이퍼가 자체적으로 처리하게 두고, fullpage는 관여 X
+            if (wheelIsOnTec(e)) return;
 
             if (animating) {
                 e.preventDefault();
@@ -479,6 +576,9 @@
             if (e.touches && e.touches.length > 0) touchStartY = e.touches[0].clientY;
         }
         function onTouchMove(e) {
+            // ▶ TEC 영역: 스와이퍼에 맡김
+            if (touchIsOnTec(e)) return;
+
             if (!e.touches || e.touches.length === 0) return;
             const currentY = e.touches[0].clientY;
             const deltaY = touchStartY - currentY; // 양수=아래
@@ -511,7 +611,6 @@
             vh = window.innerHeight;
             applyTransform();
             Smooth.resize();
-            // 진행도/렌더 보정
             introProgress = Math.max(0, Math.min(introProgress, vh));
             updateIntroParallax();
         }
@@ -519,7 +618,6 @@
         // 초기 복원
         currentIndex = loadLastIndex();
         applyTransformImmediate();
-        // 섹션 0이 아니면 패럴럭스는 최대로 고정(떠난 상태 유지)
         introProgress = currentIndex > 0 ? vh : 0;
         updateIntroParallax();
 
@@ -564,7 +662,7 @@
             const toggle = document.createElement("button");
             toggle.type = "button";
             toggle.className = "swiper-play-toggle";
-            toggle.setAttribute("aria-pressed", "true"); // true = 재생중
+            toggle.setAttribute("aria-pressed", "true");
             toggle.setAttribute("aria-label", "Pause autoplay");
             toggle.textContent = "Pause";
 
@@ -574,7 +672,6 @@
             const wrap = host.closest(".swiper_wrap") || host.parentElement;
             (wrap || host).appendChild(controls);
 
-            // 좌/우 네비게이션 버튼
             const prevBtn = document.createElement("div");
             prevBtn.className = "swiper-button-prev";
             prevBtn.setAttribute("aria-label", "Previous slide");
@@ -586,7 +683,6 @@
             (wrap || host).appendChild(prevBtn);
             (wrap || host).appendChild(nextBtn);
 
-            // Swiper 초기화
             const projectSwiper = new Swiper(host, {
                 direction: "horizontal",
                 slidesPerView: 1,
@@ -614,7 +710,6 @@
                 },
             });
 
-            // 재생/정지 토글
             function setPaused(paused) {
                 if (paused) {
                     projectSwiper.autoplay.stop();
@@ -632,16 +727,34 @@
             }
             toggle.addEventListener("click", () => {
                 const isPlaying = toggle.getAttribute("aria-pressed") === "true";
-                setPaused(isPlaying); // 재생중이면 pause, 멈춤이면 play
+                setPaused(isPlaying);
             });
 
-            setPaused(false); // 초기 상태: 재생중
+            setPaused(false);
         })();
+
+        // Our Core Tec : 호버 패널
+        $(function () {
+            const $firstItem = $("#tec .section_content_item").first();
+            const $firstPanel = $firstItem.find(".image_wrap + .panel");
+            $firstItem.addClass("on");
+            $firstPanel.slideDown().attr("aria-hidden", "true");
+
+            $("#tec").on("mouseenter focusin", ".section_content_item", function () {
+                const $nowPanel = $(this).find(".image_wrap").first().next("div");
+                $(this).addClass("on").siblings().removeClass("on");
+                $nowPanel
+                    .css({ display: "flex" })
+                    .hide()
+                    .stop(true, true)
+                    .slideDown(300)
+                    .attr("aria-hidden", "false");
+                $(this).siblings().find(".panel").slideUp(200).attr("aria-hidden", "true");
+            });
+        });
+
         // -----------------------------------------------------
         // I) PR 가로 스와이퍼 (#pr .fp_section_contents .swiper)
-        //     - 자동재생 없음, 터치/마우스 드래그 가능
-        //     - 불릿 페이징 + 각 슬라이드 내부 indicator 갱신
-        //     - 슬라이드 내부 control(prev/next) 버튼으로 제어
         // -----------------------------------------------------
         (function initPRSwiper() {
             const prHost = document.querySelector("#pr .fp_section_contents .swiper");
@@ -649,7 +762,6 @@
             if (prHost.__inited) return;
             prHost.__inited = true;
 
-            // 기존 .swiper_item → .swiper-wrapper/.swiper-slide 래핑
             const items = Array.from(prHost.querySelectorAll(".swiper_item"));
             if (!items.length) return;
 
@@ -666,13 +778,11 @@
             while (prHost.firstChild) prHost.removeChild(prHost.firstChild);
             prHost.appendChild(wrapper);
 
-            // 두 자리 포맷터
             const pad2 = (n) => String(n).padStart(2, "0");
 
-            // Swiper 인스턴스
             const prSwiper = new Swiper(prHost, {
                 direction: "horizontal",
-                slidesPerView: 'auto',
+                slidesPerView: "auto",
                 spaceBetween: 160,
                 centeredSlides: false,
                 loop: false,
@@ -680,7 +790,7 @@
                 allowTouchMove: true,
                 simulateTouch: true,
                 grabCursor: true,
-                nested: true, // fullpage와 충돌 방지
+                nested: true,
                 touchAngle: 30,
                 threshold: 6,
                 navigation: {
@@ -689,47 +799,47 @@
                 },
                 on: {
                     init() {
-                        const total = this.slides.length - this.loopedSlides * 2 || this.slides.length;
+                        const total =
+                            this.slides.length - this.loopedSlides * 2 || this.slides.length;
                         document.querySelector(".count .total").textContent = pad2(total);
-                        document.querySelector(".count .current").textContent = pad2(this.realIndex + 1);
+                        document.querySelector(".count .current").textContent = pad2(
+                            this.realIndex + 1
+                        );
                     },
                     slideChange() {
-                        document.querySelector(".count .current").textContent = pad2(this.realIndex + 1);
+                        document.querySelector(".count .current").textContent = pad2(
+                            this.realIndex + 1
+                        );
                     },
                 },
             });
         })();
-
-        // Our Core Tec
-        $(function () {
-            // 모든 패널 숨김 + aria 보정
-            $("#tec .section_content_item .image_wrap + div").hide().attr("aria-hidden", "true");
-
-            // 첫 번째 패널은 열어둠
-            const $firstPanel = $("#tec .section_content_item").first().find(".image_wrap + div");
-            $firstPanel
-                .css({ display: "flex" }) // flex 유지
-                .show() // 보이게
-                .attr("aria-hidden", "false");
-
-            // hover(enter/leave) + 키보드 포커스까지 대응
-            $("#tec")
-                .on("mouseenter focusin", ".section_content_item", function () {
-                    const $panel = $(this).find(".image_wrap").first().next("div");
-                    $panel
-                        .css({ display: "flex" })
-                        .hide()
-                        .stop(true, true)
-                        .slideDown(500)
-                        .attr("aria-hidden", "false");
-                })
-                .on("mouseleave focusout", ".section_content_item", function (e) {
-                    // 자식으로 포커스 이동 시 바로 닫히지 않도록 보정
-                    if ($(this).has(e.relatedTarget).length) return;
-
-                    const $panel = $(this).find(".image_wrap").first().next("div");
-                    $panel.stop(true, true).slideUp(500).attr("aria-hidden", "true");
-                });
-        });
     }
 })();
+
+// 반응형 이미지 / 영상 변경
+$(function () {
+    const updateMainVisual = () => {
+        const $intro = $(".main_visual_img");
+        const $subVisualImg = $("#fullpage .fp_section img");
+
+        if ($(window).width() <= 720) {
+            // 모바일용
+            $intro.attr("src", "./images/main/mo_all_source_down.mp4");
+            $subVisualImg.eq(0).attr("src", "./images/main/sub_visual_mo_1.png");
+            $subVisualImg.eq(1).attr("src", "./images/main/sub_visual_mo_2.png");
+            $subVisualImg.eq(2).attr("src", "./images/main/sub_visual_mo_3.png");
+            $subVisualImg.eq(3).attr("src", "./images/main/sub_visual_mo_4.png");
+        } else {
+            // PC용
+            $intro.attr("src", "./images/main/pc_all_source_down.mp4");
+            $subVisualImg.eq(0).attr("src", "./images/main/sub_visual_1.png");
+            $subVisualImg.eq(1).attr("src", "./images/main/sub_visual_2.png");
+            $subVisualImg.eq(2).attr("src", "./images/main/sub_visual_3.png");
+            $subVisualImg.eq(3).attr("src", "./images/main/sub_visual_4.png");
+        }
+    };
+
+    updateMainVisual();
+    $(window).on("resize", updateMainVisual);
+});
