@@ -666,19 +666,15 @@
             while (prHost.firstChild) prHost.removeChild(prHost.firstChild);
             prHost.appendChild(wrapper);
 
-            // 페이징 불릿
-            const pagination = document.createElement("div");
-            pagination.className = "swiper-pagination";
-            prHost.parentElement.appendChild(pagination);
-
             // 두 자리 포맷터
             const pad2 = (n) => String(n).padStart(2, "0");
 
             // Swiper 인스턴스
             const prSwiper = new Swiper(prHost, {
                 direction: "horizontal",
-                slidesPerView: 1.15,
-                spaceBetween: 24,
+                slidesPerView: 'auto',
+                spaceBetween: 160,
+                centeredSlides: false,
                 loop: false,
                 speed: 600,
                 allowTouchMove: true,
@@ -687,51 +683,20 @@
                 nested: true, // fullpage와 충돌 방지
                 touchAngle: 30,
                 threshold: 6,
-                pagination: {
-                    el: pagination,
-                    clickable: true,
+                navigation: {
+                    prevEl: ".btn_prev",
+                    nextEl: ".btn_next",
                 },
                 on: {
                     init() {
-                        const total = this.slides.length;
-                        // 모든 슬라이드의 total 표기 업데이트
-                        document
-                            .querySelectorAll("#pr .indicator .total")
-                            .forEach((el) => (el.textContent = pad2(total)));
-
-                        // 현재 활성 슬라이드 current 업데이트
-                        const idx = (this.realIndex ?? this.activeIndex ?? 0) + 1;
-                        const activeSlide = this.slides[this.activeIndex];
-                        if (activeSlide) {
-                            const cur = activeSlide.querySelector(".indicator .current");
-                            if (cur) cur.textContent = pad2(idx);
-                        }
+                        const total = this.slides.length - this.loopedSlides * 2 || this.slides.length;
+                        document.querySelector(".count .total").textContent = pad2(total);
+                        document.querySelector(".count .current").textContent = pad2(this.realIndex + 1);
                     },
                     slideChange() {
-                        const total = this.slides.length;
-                        const idx = (this.realIndex ?? this.activeIndex ?? 0) + 1;
-
-                        // active 슬라이드 indicator 갱신
-                        const activeSlide = this.slides[this.activeIndex];
-                        if (activeSlide) {
-                            const cur = activeSlide.querySelector(".indicator .current");
-                            if (cur) cur.textContent = pad2(idx);
-                            const tot = activeSlide.querySelector(".indicator .total");
-                            if (tot) tot.textContent = pad2(total);
-                        }
+                        document.querySelector(".count .current").textContent = pad2(this.realIndex + 1);
                     },
                 },
-            });
-
-            // 내부 control 버튼 이벤트 바인딩
-            prHost.addEventListener("click", (e) => {
-                if (e.target.closest(".control .prev")) {
-                    e.preventDefault();
-                    prSwiper.slidePrev();
-                } else if (e.target.closest(".control .next")) {
-                    e.preventDefault();
-                    prSwiper.slideNext();
-                }
             });
         })();
 

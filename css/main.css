@@ -105,6 +105,8 @@ body {
     gap: 1.12em;
 }
 
+#fullpage .fp_section{position:relative;}
+
 /* (선택) 트랜지션 중에는 포인터 막기 - 중복 입력 방지 */
 #fullpage.is-animating {
     pointer-events: none;
@@ -134,7 +136,7 @@ body {
 .fp_section_header .title {
     font-size: 5.09em;
     position: relative;
-    top: 0.3em;
+    top: 0.25em;
 }
 
 .fp_section .sub_title {
@@ -493,11 +495,17 @@ body {
     padding-left: 3.125em;
 }
 
+.fp_section_contents .swiper{overflow:visible; width:80%; margin:0;}
+.fp_section_contents .swiper .swiper-slide{width:100%; flex-shrink:0;}
+.fp_section_contents .swiper .swiper-slide .swiper_image_wrap{flex:0 0 auto;}
+.fp_section_contents .swiper .swiper-slide .swiper_image_wrap img{display:block; width:100%;}
 #pr .swiper_item {
     display: flex;
     gap: 10em;
+    /* 
     width: 95.8125em;
-    max-width: 80vw;
+    max-width: 80vw; 
+    */
     gap: 3.125em;
 }
 #pr .swiper_item h4 {
@@ -516,29 +524,32 @@ body {
     color: var(--gry);
 }
 
-#pr .swiper_item .indicator {
+.fp_section_contents{position:relative;}
+.fp_section_contents .indicator-wrap{display:flex; gap:3.125em; position:absolute; bottom:0; z-index:2;}
+.fp_section_contents .indicator-wrap::before{content:''; flex:0 0 auto; display:block; width:588px;}
+
+.fp_section_contents .indicator{
     display: flex;
     gap: 2em;
+    width:80%;
     margin-top: auto;
 }
-#pr .swiper_item .indicator .page {
-    font-size: 1.25em;
+.fp_section_contents .count{
+    font-weight: 200;
+    font-size: 1.25rem;
 }
-#pr .swiper_item .indicator .page .current {
-    font-weight: 300;
-}
-#pr .swiper_item .indicator .page .total {
+.fp_section_contents .count .total{
     font-weight: 500;
 }
 .control {
     display: flex;
-    gap: 0.625em;
+    gap: 0.625rem;
 }
 .control .btn_prev,
 .control .btn_next {
     display: inline-block;
     overflow: hidden;
-    width: 1.5em;
+    width: 24px;
     text-indent: -9999px;
     background-position: center;
     background-repeat: no-repeat;
@@ -550,10 +561,10 @@ body {
     background-image: url(../images/common/swiper_btn_arrow_right.png);
 }
 
-.swiper-slide:first-child .control .btn_prev {
+.control .btn_prev.swiper-button-disabled {
     background-image: url(../images/common/swiper_btn_arrow_left_disabled.png);
 }
-.swiper-slide:last-child .control .btn_next {
+.control .btn_next.swiper-button-disabled{
     background-image: url(../images/common/swiper_btn_arrow_right_disabled.png);
 }
 /* demo size */
