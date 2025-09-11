@@ -576,6 +576,10 @@
             if (e.touches && e.touches.length > 0) touchStartY = e.touches[0].clientY;
         }
         function onTouchMove(e) {
+            if (window.innerWidth <= 720) {
+                // 모바일이면 기본 스크롤 허용
+                return;
+            }
             // ▶ TEC 영역: 스와이퍼에 맡김
             if (touchIsOnTec(e)) return;
 
