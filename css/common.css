@@ -116,8 +116,8 @@
 body {
     overflow-x: hidden;
     background-color: var(--bg);
-    /* font-size: 16px; */
     font-size: 0.833331vw; /* 1920px 기준 16px */
+    font-size: 16px;
     font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
         "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
 }
