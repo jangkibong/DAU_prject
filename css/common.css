@@ -498,7 +498,7 @@ footer {
         padding: 0 1rem;
     }
     .footer_cta {
-        width: 10.9rem;
+        width: fit-content
     }
     .footer_body {
     }
