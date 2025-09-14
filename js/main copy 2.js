@@ -44,17 +44,15 @@
 
         const CFG = {
             imgScaleFrom: 1.0,
-            imgScaleTo: 0.55,
+            imgScaleTo: 0.6,
             imgYFromVH: 0,
-            imgYToVH: -45,
-
+            imgYToVH: -70,
             imgScaleSpeed: 2,
             imgScaleEase: "easeOutCubic",
             imgMoveSpeed: 0.5,
             imgMoveEase: "linear",
-
             titleTopFromVH: 95,
-            titleTopToVH: 20,
+            titleTopToVH: 0,
             titleSpeed: 1,
             titleEase: "linear",
             titleFollowImage: true,
@@ -165,11 +163,13 @@
         }
 
         measure();
-        (function initOnRefresh() {
-            // Intro 초기값 세팅
-            progress = 0;
-            $img.css("transform", "translateY(0px) scale(1)");
-            $title.css("top", "100vh");
+        (function initByViewport() {
+            const y = $win.scrollTop() || 0;
+            const vh = win.innerHeight || doc.documentElement.clientHeight || 0;
+            if (y + vh <= introTop + 1) progress = 0;
+            else if (y >= introTop + introH - 1) progress = 1;
+            else progress = y <= introTop ? 0 : 1;
+            apply(progress);
         })();
 
         win.addEventListener("resize", measure, { passive: true });
@@ -928,13 +928,16 @@
     })();
 })(window.jQuery, window, document);
 
+
+
+
 // 반응형 이미지 / 영상 변경
 $(function () {
     const updateMainVisual = () => {
         const $intro = $(".main_visual_img");
         const $subVisualImg = $("#fullpage .section img");
 
-        if ($(window).width() <= 1200) {
+        if ($(window).width() <= 720) {
             // 모바일용
             $intro.attr("src", "./images/main/mo_all_source_down.mp4");
             $subVisualImg.eq(0).attr("src", "./images/main/sub_visual_mo_1.png");

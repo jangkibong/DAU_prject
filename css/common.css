@@ -2,7 +2,6 @@
 
 @import url(./reset.css);
 @import url(./root.css);
-@import url(./main.css);
 
 /* Pretendard Variable Font */
 @font-face {
@@ -23,6 +22,7 @@
 
 /* common */
 .sr_only {
+    display: block;
     position: relative;
     overflow: hidden;
     width: 1px;
@@ -37,7 +37,7 @@
     display: none !important;
 }
 
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 1200px) {
     .pc_only {
         display: none !important;
     }
@@ -122,9 +122,9 @@ body {
         "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
 }
 
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 480px) {
     body {
-        font-size: 4.1vw;
+        font-size: 0.41vw; /* 390px 기준 16px*/
     }
 }
 body.no-scroll {
@@ -498,7 +498,7 @@ footer {
         padding: 0 1rem;
     }
     .footer_cta {
-        width: fit-content
+        width: fit-content;
     }
     .footer_body {
     }
