@@ -934,7 +934,7 @@ $(function () {
         const $intro = $(".main_visual_img");
         const $subVisualImg = $("#fullpage .section img");
 
-        if ($(window).width() <= 1200) {
+        if ($(window).width() <= 720) {
             // 모바일용
             $intro.attr("src", "./images/main/mo_all_source_down.mp4");
             $subVisualImg.eq(0).attr("src", "./images/main/sub_visual_mo_1.png");

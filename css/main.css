@@ -3,12 +3,6 @@ body {
     -ms-overflow-style: none;
     font-size: 0.833331vw; /* 1920px 기준 16px */
 }
-@media screen and (max-width: 480px) {
-    html,
-    body {
-        font-size: 2.5641vw; /* 390px 기준 10px*/
-    }
-}
 ::-webkit-scrollbar {
     display: none;
 }
@@ -157,6 +151,8 @@ body {
 .section .sub_title + p {
     margin-top: 0.9em;
     line-height: 1.12;
+    font-size: 1rem;
+    word-break: keep-all;
 }
 
 .section .sub_title + p + .btn.arrow_right {
@@ -238,7 +234,7 @@ body {
     position: absolute;
     top: 5em; /* 80px */
     left: 3.125em; /* 50px */
-    font-size: 1.5em; /* 24px */
+    font-size: clamp(18px, 1.5em, 24px); /* 24px */
     font-weight: 100;
     z-index: 10;
 }
@@ -269,7 +265,7 @@ body {
     left: 0;
     bottom: 0;
     margin-bottom: 0.7rem;
-    font-size: 17.5em; /* 280px */
+    font-size: clamp(120px, 17.5em, 280px); /* 280px */
     line-height: 1.21;
     font-family: "NewYork", serif;
 }
@@ -304,6 +300,7 @@ body {
 .sub_visual .swiper {
     /* width: 100%; */
     height: 100%;
+    max-width: 70vw;
 }
 .sub_visual .swiper-wrapper,
 .sub_visual .swiper-slide {
@@ -393,6 +390,13 @@ body {
     font-size: 0.375em;
 }
 
+.swiper_wrap .pc_only {
+    display: inline-flex !important;
+}
+.swiper_wrap .mo_only {
+    display: none !important;
+}
+
 /* project controls */
 .project-controls {
     display: flex;
@@ -444,7 +448,7 @@ body {
     position: absolute;
     width: 5em;
     height: 5em;
-    border-radius: 2.5em;
+    border-radius: 50%;
     background-size: 100%;
     background-repeat: no-repeat;
     box-shadow: 0 0 5px #0000003d;
@@ -512,6 +516,8 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
+    padding: 0 1rem;
+    margin: 0 -1px;
     background-color: var(--bg);
     z-index: 1;
 }
@@ -623,10 +629,32 @@ body {
     align-items: center;
     justify-content: center;
 }
+@media screen and (max-width: 1300px) and (min-width: 721px) {
+    .sub_titles_wrap {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
 
-@media screen and (max-width: 480px) {
+    .sub_visual .sub_tilte_wrap {
+        justify-content: flex-start;
+    }
+
+    .section .sub_title + p {
+        align-self: flex-start;
+    }
+}
+
+@media screen and (max-width: 720px) {
+    html,
+    body {
+        font-size: 2.5641vw; /* 390px 기준 10px*/
+    }
     .section .main_title {
         font-size: 7.5em;
+    }
+    .section .main_title .slogan {
+        top: -1em;
     }
 
     .sub_visual h3 {
@@ -637,6 +665,9 @@ body {
 
     .sub_visual .swiper {
         height: 100vw;
+        min-height: 50vh;
+        max-height: 50vh;
+        max-width: none;
     }
 
     .sub_visual .sub_title {
@@ -644,7 +675,7 @@ body {
         font-size: 7.6rem;
     }
 
-    .section .sub_title + p {
+    .sub_visual .sub_title + p {
         font-size: 1.2rem;
         align-self: center;
         margin-top: 0;
@@ -658,16 +689,34 @@ body {
     .sub_visual {
         flex-direction: column;
     }
+    .section .sub_visual .sub_title {
+        font-size: 7.6rem;
+    }
+    .section .sub_visual .sub_title + p {
+        align-self: flex-end;
+    }
+    .sub_visual .sub_visual_item {
+        justify-content: center;
+    }
+    .sub_visual .sub_visual_item img {
+        width: 100%;
+        object-fit: cover;
+    }
 
     .swiper_wrap {
         width: calc(100vw - 2rem);
         height: auto;
         max-height: unset;
     }
+    .swiper_wrap .swiper_item_header {
+        margin-bottom: 0;
+    }
     .swiper_wrap .swiper_item_header .title {
         position: relative;
-        font-size: 4rem;
-        bottom: -0.55em;
+        font-size: clamp(20px, 4rem, 40px);
+        line-height: 1;
+        bottom: auto;
+        top: 9px;
         text-align: left;
     }
     .swiper_wrap .swiper_image_wrap {
@@ -675,7 +724,9 @@ body {
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        height: 56rem;
+        height: 151vw;
+        min-height: 44vh;
+        max-height: calc(100vh - 25rem);
     }
     .swiper_wrap .swiper_itme_footer .swiper_item_info {
         flex-direction: column;
@@ -689,6 +740,12 @@ body {
         margin-top: 7.4rem;
     }
 
+    .swiper_wrap .pc_only {
+        display: none !important;
+    }
+    .swiper_wrap .mo_only {
+        display: block !important;
+    }
     /* project controls */
     .project-controls {
         left: 0;
@@ -712,9 +769,9 @@ body {
     /* project 좌/우 버튼 위치 보정 */
     .swiper_wrap .swiper-button-prev,
     .swiper_wrap .swiper-button-next {
-        width: 5rem;
-        height: 5rem;
-        top: 35rem;
+        max-width: 50px;
+        max-height: 50px;
+        top: calc(50% - 5.5rem);
     }
 
     .swiper_wrap {
