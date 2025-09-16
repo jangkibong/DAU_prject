@@ -30,13 +30,14 @@ $(function () {
             lock = false;
             return;
         }
-
-        if (st > lastScrollTop && st > 50) {
-            // 스크롤 다운: 헤더 페이드 아웃 + 위로 숨김
-            hideHeader();
-        } else {
-            // 스크롤 업: 헤더 페이드 인 + 원위치
-            showHeader();
+        if ($header.hasClass("is-hidden")) {
+            if (st > lastScrollTop && st > 50) {
+                // 스크롤 다운: 헤더 페이드 아웃 + 위로 숨김
+                hideHeader();
+            } else {
+                // 스크롤 업: 헤더 페이드 인 + 원위치
+                showHeader();
+            }
         }
 
         lastScrollTop = st <= 0 ? 0 : st; // 음수 방지(iOS bounce)
@@ -110,3 +111,32 @@ $(document).on("dau:header:show", function () {
 $(document).on("dau:fullpageScroll", function (e, p) {
     // console.log("[bridge]", p && p.stack, p && p.prevStack);
 });
+
+/* =========================================================
+ * 스크롤 제어
+ * ---------------------------------------------------------
+ * - body.no-scroll 있으면 기본 스크롤 차단
+ * - .menu 영역은 항상 스크롤 허용
+ * =======================================================*/
+(function ($, win, doc) {
+    if (!$) return;
+
+    $(function () {
+        const $body = $("body");
+
+        // wheel/mousewheel, touchmove 모두 제어
+        $(doc).on("wheel.noScroll mousewheel.noScroll touchmove.noScroll", function (e) {
+            // body에 no-scroll 있으면 차단
+            if ($body.hasClass("no-scroll")) {
+                // .menu 안에서는 통과
+                if ($(e.target).closest(".menu").length) {
+                    return; // 그냥 허용
+                }
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+            // body에 no-scroll 없으면 스크롤 허용 → 아무 동작 안 함
+        });
+    });
+})(jQuery, window, document);

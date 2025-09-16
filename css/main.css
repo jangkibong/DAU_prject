@@ -2,6 +2,7 @@
 body {
     -ms-overflow-style: none;
     font-size: 0.833331vw; /* 1920px 기준 16px */
+    scroll-behavior: smooth; /* 부드럽게 이동 */
 }
 ::-webkit-scrollbar {
     display: none;
@@ -21,13 +22,18 @@ body {
 }
 /* title font - end */
 
+.section.fullpage {
+    height: 100vh;
+    scroll-snap-align: start; /* 각 섹션의 시작점에 스냅 */
+}
+
 /* intro -start */
 .section .main_visual.intro {
     /* position: fixed; */
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    z-index: 1000;
+    z-index: 100;
 }
 .section .intro .visual_img_box {
     display: flex;
@@ -642,6 +648,10 @@ body {
 
     .section .sub_title + p {
         align-self: flex-start;
+    }
+
+    .section_contents .swiper .swiper-slide .swiper_image_wrap img {
+        max-width: 50vw;
     }
 }
 

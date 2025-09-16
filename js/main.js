@@ -48,17 +48,17 @@
             imgYFromVH: 0,
             imgYToVH: -45,
 
-            imgScaleSpeed: 2,
+            imgScaleSpeed: 2.2,
             imgScaleEase: "easeOutCubic",
-            imgMoveSpeed: 0.5,
+            imgMoveSpeed: 1,
             imgMoveEase: "linear",
 
             titleTopFromVH: 95,
             titleTopToVH: 20,
-            titleSpeed: 1,
+            titleSpeed: 1.2,
             titleEase: "linear",
             titleFollowImage: true,
-            virtualRangePx: 1000,
+            virtualRangePx: 900,
             epsilon: 0,
         };
 
@@ -194,111 +194,111 @@
     // =========================================================
     // 2) Scroller (관성 스크롤)
     // =========================================================
-    const Scroller = (() => {
-        let target = win.pageYOffset;
-        let current = target;
-        let raf = null;
-        const EPS = 0.2;
-        let DAMPING = 0.14;
+    // const Scroller = (() => {
+    //     let target = win.pageYOffset;
+    //     let current = target;
+    //     let raf = null;
+    //     const EPS = 0.2;
+    //     let DAMPING = 0.14;
 
-        function start() {
-            if (!raf) raf = requestAnimationFrame(loop);
-        }
-        function loop() {
-            const diff = target - current;
-            if (Math.abs(diff) < EPS) {
-                current = target;
-                win.scrollTo(0, Math.round(current));
-                raf = null;
-                return;
-            }
-            current += diff * DAMPING;
-            win.scrollTo(0, Math.round(current));
-            raf = requestAnimationFrame(loop);
-        }
-        function maxScroll() {
-            const h = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
-            return Math.max(0, h - win.innerHeight);
-        }
+    //     function start() {
+    //         if (!raf) raf = requestAnimationFrame(loop);
+    //     }
+    //     function loop() {
+    //         const diff = target - current;
+    //         if (Math.abs(diff) < EPS) {
+    //             current = target;
+    //             win.scrollTo(0, Math.round(current));
+    //             raf = null;
+    //             return;
+    //         }
+    //         current += diff * DAMPING;
+    //         win.scrollTo(0, Math.round(current));
+    //         raf = requestAnimationFrame(loop);
+    //     }
+    //     function maxScroll() {
+    //         const h = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
+    //         return Math.max(0, h - win.innerHeight);
+    //     }
 
-        return {
-            add(dy) {
-                if (reduceMotion) {
-                    win.scrollTo(0, clamp(win.pageYOffset + dy, 0, maxScroll()));
-                    return;
-                }
-                target = clamp(target + dy, 0, maxScroll());
-                start();
-            },
-            jumpTo(y) {
-                if (reduceMotion) {
-                    win.scrollTo(0, clamp(y, 0, maxScroll()));
-                    return;
-                }
-                target = clamp(y, 0, maxScroll());
-                win.scrollTo(0, Math.round(target));
-            },
-            resize() {
-                target = clamp(target, 0, maxScroll());
-                current = clamp(current, 0, maxScroll());
-            },
-            config(opt = {}) {
-                if (typeof opt.damping === "number") DAMPING = opt.damping;
-            },
-        };
-    })();
+    //     return {
+    //         add(dy) {
+    //             if (reduceMotion) {
+    //                 win.scrollTo(0, clamp(win.pageYOffset + dy, 0, maxScroll()));
+    //                 return;
+    //             }
+    //             target = clamp(target + dy, 0, maxScroll());
+    //             start();
+    //         },
+    //         jumpTo(y) {
+    //             if (reduceMotion) {
+    //                 win.scrollTo(0, clamp(y, 0, maxScroll()));
+    //                 return;
+    //             }
+    //             target = clamp(y, 0, maxScroll());
+    //             win.scrollTo(0, Math.round(target));
+    //         },
+    //         resize() {
+    //             target = clamp(target, 0, maxScroll());
+    //             current = clamp(current, 0, maxScroll());
+    //         },
+    //         config(opt = {}) {
+    //             if (typeof opt.damping === "number") DAMPING = opt.damping;
+    //         },
+    //     };
+    // })();
 
     // =========================================================
     // 3) 입력 라우터(전역)
     // =========================================================
-    (function bindRouter() {
-        function onWheel(e) {
-            if (Intro.ready && Intro.covers()) {
-                if (Intro.wheel(e)) return;
-            }
-            e.preventDefault();
-            const dy = e.deltaY;
-            Scroller.add(dy);
-        }
-        let prevY = null;
-        function onTouchStart(e) {
-            if (Intro.ready) Intro.tstart(e);
-            const t = e.touches && e.touches[0];
-            prevY = t ? t.clientY : null;
-        }
-        function onTouchMove(e) {
-            if (Intro.ready && Intro.covers()) {
-                if (Intro.tmove(e)) return;
-            }
-            e.preventDefault();
-            const t = e.touches && e.touches[0];
-            if (!t) {
-                prevY = null;
-                return;
-            }
-            if (prevY == null) {
-                prevY = t.clientY;
-                return;
-            }
-            const dy = prevY - t.clientY || 0;
-            prevY = t.clientY;
-            Scroller.add(dy);
-        }
-        function onTouchEnd(e) {
-            if (Intro.ready) Intro.tend(e);
-            prevY = null;
-        }
-        function onResize() {
-            Scroller.resize();
-            if (Intro.ready) Intro.resize();
-        }
+    // (function bindRouter() {
+    //     function onWheel(e) {
+    //         if (Intro.ready && Intro.covers()) {
+    //             if (Intro.wheel(e)) return;
+    //         }
+    //         e.preventDefault();
+    //         const dy = e.deltaY;
+    //         Scroller.add(dy);
+    //     }
+    //     let prevY = null;
+    //     function onTouchStart(e) {
+    //         if (Intro.ready) Intro.tstart(e);
+    //         const t = e.touches && e.touches[0];
+    //         prevY = t ? t.clientY : null;
+    //     }
+    //     function onTouchMove(e) {
+    //         if (Intro.ready && Intro.covers()) {
+    //             if (Intro.tmove(e)) return;
+    //         }
+    //         e.preventDefault();
+    //         const t = e.touches && e.touches[0];
+    //         if (!t) {
+    //             prevY = null;
+    //             return;
+    //         }
+    //         if (prevY == null) {
+    //             prevY = t.clientY;
+    //             return;
+    //         }
+    //         const dy = prevY - t.clientY || 0;
+    //         prevY = t.clientY;
+    //         Scroller.add(dy);
+    //     }
+    //     function onTouchEnd(e) {
+    //         if (Intro.ready) Intro.tend(e);
+    //         prevY = null;
+    //     }
+    //     function onResize() {
+    //         Scroller.resize();
+    //         if (Intro.ready) Intro.resize();
+    //     }
 
-        win.addEventListener("wheel", onWheel, { passive: false });
-        win.addEventListener("touchstart", onTouchStart, { passive: true });
-        win.addEventListener("touchmove", onTouchMove, { passive: false });
-        win.addEventListener("touchend", onTouchEnd, { passive: true });
-        win.addEventListener("resize", onResize, { passive: true });
-    })();
+    //     win.addEventListener("wheel", onWheel, { passive: false });
+    //     win.addEventListener("touchstart", onTouchStart, { passive: true });
+    //     win.addEventListener("touchmove", onTouchMove, { passive: false });
+    //     win.addEventListener("touchend", onTouchEnd, { passive: true });
+    //     win.addEventListener("resize", onResize, { passive: true });
+    // })();
 
     // =========================================================
     // 4) Sub Visual: Vertical Swiper + 인디케이터 페이드
@@ -306,150 +306,18 @@
     //    - 전환: slide(스와이프)
     //    - section 전체 스크롤로 스와이퍼 제어
     // =========================================================
+    // =========================================================
+    // 4) Sub Visual Module (뷰포트 80% 조건 추가)
+    // =========================================================
     (function SubVisualModule() {
-        $(initSubVisualVerticalSwiper);
-
-        function initSubVisualVerticalSwiper() {
-            const NS = ".subVisualV";
-
-            $(".sub_visual").each(function () {
-                const $host = $(this);
-                if ($host.data("svV-init")) return;
-                $host.data("svV-init", true);
-
-                const $container = $host.find(".sub_visual_content");
-                const $titlesWrap = $host.find(".sub_titles_wrap");
-                const $indicators = $titlesWrap.find(".sub_tilte_wrap");
-
-                if (!$container.length || !$indicators.length) return;
-
-                // 1) DOM 승격
-                const slideEls = upgradeToSwiperDOM($container);
-
-                // 2) 접근성 보강
-                decorateIndicatorsA11y($titlesWrap, $indicators, slideEls);
-
-                // 3) 초기 인덱스
-                const savedIndex = readSavedIndex();
-                const initialIndex = clampIndex(
-                    Number.isInteger(savedIndex) ? savedIndex : 0,
-                    slideEls.length
-                );
-
-                // 4) 스와이퍼 생성 (세로 슬라이드)
-                const swiper = new Swiper($container.get(0), {
-                    direction: "vertical",
-                    effect: "slide",
-                    speed: 600,
-                    allowTouchMove: true,
-                    loop: false,
-                    initialSlide: initialIndex,
-                    // 컨테이너 자체의 mousewheel은 비활성(섹션에서 통합 제어하므로)
-                    mousewheel: false,
-                    observer: true,
-                    observeParents: true,
-                    touchAngle: 45,
-                    preventInteractionOnTransition: true,
-                    a11y: { enabled: true },
-                    on: {
-                        afterInit(sw) {
-                            const idx = getActiveIndex(sw);
-                            fadeSetIndicator($indicators, idx, true);
-                        },
-                        slideChange(sw) {
-                            const idx = getActiveIndex(sw);
-                            fadeSetIndicator($indicators, idx);
-                            writeSavedIndex(idx);
-                        },
-                    },
-                });
-
-                // 5) 인디케이터 → 슬라이드 이동
-                bindIndicatorEvents($indicators, swiper, NS);
-
-                // 6) 섹션 전체 스크롤로 스와이퍼 제어 + 화면 이동 차단
-                const $section = $host.closest("section"); // 스와이퍼가 포함된 섹션
-                bindSectionScrollControl($section, swiper, NS);
-            });
+        // ----- 헬퍼 함수 (위로 이동) -----
+        function getVisibleRatio($el) {
+            if (!$el.length) return 0;
+            const rect = $el[0].getBoundingClientRect();
+            const vh = window.innerHeight || document.documentElement.clientHeight;
+            const visibleH = Math.max(0, Math.min(rect.bottom, vh) - Math.max(rect.top, 0));
+            return visibleH / vh; // 뷰포트 기준
         }
-
-        /**
-         * 역할: 섹션 전체에서 휠/터치 스크롤을 가로채 스와이퍼를 제어
-         * - 스와이퍼가 더 이동 가능하면: e.preventDefault() + e.stopImmediatePropagation()로
-         *   페이지 스크롤 완전 차단 후 slideNext/Prev 수행
-         * - 스와이퍼 경계(처음/마지막)에서 해당 방향 입력 시: 페이지 스크롤 허용
-         */
-        function bindSectionScrollControl($section, swiper, NS) {
-            if (!$section || !$section.length) return;
-
-            let tStartY = 0;
-            const TOUCH_THRESHOLD = 8; // 터치 노이즈 억제
-
-            // 휠 제어
-            $section.off("wheel" + NS).on("wheel" + NS, function (e) {
-                const evt = e.originalEvent || e;
-                const dy = evt.deltaY || 0;
-
-                // 스와이퍼가 이동 가능한 경우 페이지 스크롤 차단
-                if (swiper.animating) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    return;
-                }
-                if (dy > 0 && !swiper.isEnd) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    swiper.slideNext();
-                    return;
-                }
-                if (dy < 0 && !swiper.isBeginning) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    swiper.slidePrev();
-                    return;
-                }
-                // 여기까지 오면 경계에서 바깥 방향 입력 → 페이지 스크롤 허용
-            });
-
-            // 터치 제어
-            $section.off("touchstart" + NS).on("touchstart" + NS, function (e) {
-                const t = e.originalEvent.touches && e.originalEvent.touches[0];
-                tStartY = t ? t.clientY : 0;
-            });
-            $section.off("touchmove" + NS).on("touchmove" + NS, function (e) {
-                const t = e.originalEvent.touches && e.originalEvent.touches[0];
-                if (!t) return;
-                const dy = tStartY - t.clientY;
-
-                if (swiper.animating) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    return;
-                }
-
-                if (Math.abs(dy) < TOUCH_THRESHOLD) {
-                    return;
-                }
-
-                if (dy > 0 && !swiper.isEnd) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    swiper.slideNext();
-                    tStartY = t.clientY;
-                    return;
-                }
-                if (dy < 0 && !swiper.isBeginning) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    swiper.slidePrev();
-                    tStartY = t.clientY;
-                    return;
-                }
-                // 경계에서 바깥 방향 → 페이지 스크롤 허용
-            });
-        }
-
-        // ----- DOM 승격/접근성/인디케이터 동기화 유틸 -----
         function upgradeToSwiperDOM($container) {
             if ($container.children(".swiper-wrapper").length) {
                 return $container.find(".swiper-slide").toArray();
@@ -469,7 +337,6 @@
             $container.append(wrapper);
             return Array.from($container.find(".swiper-slide"));
         }
-
         function decorateIndicatorsA11y($wrap, $indicators, slideEls) {
             $wrap.attr({ role: "tablist", "aria-label": "섹션 슬라이드 인디케이터" });
             $indicators.each(function (idx) {
@@ -481,38 +348,15 @@
                     tabindex: idx === 0 ? "0" : "-1",
                     "aria-selected": idx === 0 ? "true" : "false",
                     ...(slideId ? { "aria-controls": slideId } : {}),
-                }).css("opacity", idx === 0 ? 1 : 0); // 초기 페이드 상태
+                }).css("opacity", idx === 0 ? 1 : 0);
             });
         }
-
         function bindIndicatorEvents($indicators, swiper, NS) {
             $indicators.off("click" + NS).on("click" + NS, function (e) {
                 e.preventDefault();
-                const idx = $(this).index();
-                swiper.slideTo(idx);
-            });
-            $indicators.off("keydown" + NS).on("keydown" + NS, function (e) {
-                const key = e.key;
-                const $cur = $(this);
-                const idx = $cur.index();
-                if (key === "Enter" || key === " ") {
-                    e.preventDefault();
-                    swiper.slideTo(idx);
-                    return;
-                }
-                if (key === "ArrowUp" || key === "ArrowLeft") {
-                    e.preventDefault();
-                    swiper.slideTo(Math.max(0, idx - 1));
-                    return;
-                }
-                if (key === "ArrowDown" || key === "ArrowRight") {
-                    e.preventDefault();
-                    swiper.slideTo(Math.min($indicators.length - 1, idx + 1));
-                    return;
-                }
+                swiper.slideTo($(this).index());
             });
         }
-
         function fadeSetIndicator($indicators, activeIndex, immediate) {
             const DURATION = 280;
             $indicators.each(function (idx) {
@@ -526,14 +370,9 @@
                 else $it.stop(true, true).animate({ opacity: toOpacity }, DURATION, "swing");
             });
         }
-
         function getActiveIndex(sw) {
-            if (!sw) return 0;
-            if (typeof sw.realIndex === "number") return sw.realIndex;
-            if (typeof sw.activeIndex === "number") return sw.activeIndex;
-            return 0;
+            return (sw && (typeof sw.realIndex === "number" ? sw.realIndex : sw.activeIndex)) || 0;
         }
-
         function writeSavedIndex(idx) {
             try {
                 localStorage.setItem("dau:subvisual:lastIndex", String(idx));
@@ -549,9 +388,118 @@
             }
         }
         function clampIndex(n, len) {
-            if (typeof n !== "number" || typeof len !== "number" || len <= 0) return 0;
-            return Math.max(0, Math.min(len - 1, n));
+            return typeof n !== "number" || typeof len !== "number" || len <= 0
+                ? 0
+                : Math.max(0, Math.min(len - 1, n));
         }
+
+        $(function initSubVisualVerticalSwiper() {
+            const NS = ".subVisualV";
+            $(".sub_visual").each(function () {
+                const $host = $(this);
+                if ($host.data("svV-init")) return;
+                $host.data("svV-init", true);
+
+                const $container = $host.find(".sub_visual_content");
+                const $titlesWrap = $host.find(".sub_titles_wrap");
+                const $indicators = $titlesWrap.find(".sub_tilte_wrap");
+                if (!$container.length || !$indicators.length) return;
+
+                const slideEls = upgradeToSwiperDOM($container);
+                decorateIndicatorsA11y($titlesWrap, $indicators, slideEls);
+
+                const savedIndex = readSavedIndex();
+                const initialIndex = clampIndex(
+                    Number.isInteger(savedIndex) ? savedIndex : 0,
+                    slideEls.length
+                );
+
+                const swiper = new Swiper($container.get(0), {
+                    direction: "vertical",
+                    effect: "slide",
+                    speed: 600,
+                    allowTouchMove: true,
+                    loop: false,
+                    initialSlide: initialIndex,
+                    mousewheel: false,
+                    observer: true,
+                    observeParents: true,
+                    touchAngle: 45,
+                    preventInteractionOnTransition: true,
+                    a11y: { enabled: true },
+                    on: {
+                        afterInit(sw) {
+                            fadeSetIndicator($indicators, getActiveIndex(sw), true);
+                        },
+                        slideChange(sw) {
+                            const idx = getActiveIndex(sw);
+                            fadeSetIndicator($indicators, idx);
+                            writeSavedIndex(idx);
+                        },
+                    },
+                });
+
+                bindIndicatorEvents($indicators, swiper, NS);
+
+                const $section = $host.closest("section");
+                if (!$section.length) return;
+
+                let tStartY = 0,
+                    TOUCH_THRESHOLD = 8;
+                $section.off("wheel" + NS).on("wheel" + NS, function (e) {
+                    if (getVisibleRatio($section) < 0.9) return;
+                    const evt = e.originalEvent || e;
+                    const dy = evt.deltaY || 0;
+                    if (swiper.animating) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        return;
+                    }
+                    if (dy > 0 && !swiper.isEnd) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        swiper.slideNext();
+                        return;
+                    }
+                    if (dy < 0 && !swiper.isBeginning) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        swiper.slidePrev();
+                        return;
+                    }
+                });
+                $section.off("touchstart" + NS).on("touchstart" + NS, function (e) {
+                    const t = e.originalEvent.touches && e.originalEvent.touches[0];
+                    tStartY = t ? t.clientY : 0;
+                });
+                $section.off("touchmove" + NS).on("touchmove" + NS, function (e) {
+                    if (getVisibleRatio($section) < 0.9) return;
+                    const t = e.originalEvent.touches && e.originalEvent.touches[0];
+                    if (!t) return;
+                    const dy = tStartY - t.clientY;
+                    if (swiper.animating) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        return;
+                    }
+                    if (Math.abs(dy) < TOUCH_THRESHOLD) return;
+                    if (dy > 0 && !swiper.isEnd) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        swiper.slideNext();
+                        tStartY = t.clientY;
+                        return;
+                    }
+                    if (dy < 0 && !swiper.isBeginning) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        swiper.slidePrev();
+                        tStartY = t.clientY;
+                        return;
+                    }
+                });
+            });
+        });
     })();
 
     // =========================================================
@@ -703,7 +651,7 @@
 
             // 8) 섹션 전체 스크롤/터치로 좌우 이동 + 페이지 스크롤 차단
             const $section = $root.closest("section").length ? $root.closest("section") : $root;
-            bindSectionScrollControl($section, sw, NS);
+            // bindSectionScrollControl($section, sw, NS);
 
             /* -------------------- 유틸/헬퍼 -------------------- */
 
