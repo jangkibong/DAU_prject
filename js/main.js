@@ -6,11 +6,45 @@
  *   - 스와이퍼가 이동 가능한 경우, 화면(페이지) 스크롤은 완전히 차단
  *   - 스와이퍼 경계(처음/마지막)에서만 페이지 스크롤 통과
  */
+
+// main.js
+// -----------------------------------------------------
+// 0) 인트로 처리
+// -----------------------------------------------------
+// $(function () {
+//     setTimeout(function () {
+//         $(".intro").removeClass("intro");
+//     }, 200);
+// });
+
 (function ($, win, doc) {
+    window.scrollEnabled = true;
+
+    // 제어 함수도 window에 붙여두면 더 편리
+    window.disableCustomScroll = function () {
+        window.scrollEnabled = false;
+    };
+    window.enableCustomScroll = function () {
+        window.scrollEnabled = true;
+    };
+
     if (!$) return;
 
     // =========================================================
-    // 0) 유틸/접근성
+    // 0) 모바일 뷰포트 높이 계산
+    // =========================================================
+    function setRealVH() {
+        // window.innerHeight = 네비게이션 바 제외하고 실제 보이는 높이
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+    }
+    // 페이지 처음 로드할 때 실행
+    setRealVH();
+    // 화면 크기 바뀌면 다시 계산
+    window.addEventListener("resize", setRealVH);
+
+    // =========================================================
+    // 0-1) 유틸/접근성
     // =========================================================
     const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
     const reduceMotion = (() => {
@@ -194,120 +228,121 @@
     // =========================================================
     // 2) Scroller (관성 스크롤)
     // =========================================================
-    // const Scroller = (() => {
-    //     let target = win.pageYOffset;
-    //     let current = target;
-    //     let raf = null;
-    //     const EPS = 0.2;
-    //     let DAMPING = 0.14;
+    const Scroller = (() => {
+        let target = win.pageYOffset;
+        let current = target;
+        let raf = null;
+        const EPS = 0.2;
+        let DAMPING = 0.14;
 
-    //     function start() {
-    //         if (!raf) raf = requestAnimationFrame(loop);
-    //     }
-    //     function loop() {
-    //         const diff = target - current;
-    //         if (Math.abs(diff) < EPS) {
-    //             current = target;
-    //             win.scrollTo(0, Math.round(current));
-    //             raf = null;
-    //             return;
-    //         }
-    //         current += diff * DAMPING;
-    //         win.scrollTo(0, Math.round(current));
-    //         raf = requestAnimationFrame(loop);
-    //     }
-    //     function maxScroll() {
-    //         const h = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
-    //         return Math.max(0, h - win.innerHeight);
-    //     }
+        function start() {
+            if (!raf) raf = requestAnimationFrame(loop);
+        }
+        function loop() {
+            const diff = target - current;
+            if (Math.abs(diff) < EPS) {
+                current = target;
+                win.scrollTo(0, Math.round(current));
+                raf = null;
+                return;
+            }
+            current += diff * DAMPING;
+            win.scrollTo(0, Math.round(current));
+            raf = requestAnimationFrame(loop);
+        }
+        function maxScroll() {
+            const h = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
+            return Math.max(0, h - win.innerHeight);
+        }
 
-    //     return {
-    //         add(dy) {
-    //             if (reduceMotion) {
-    //                 win.scrollTo(0, clamp(win.pageYOffset + dy, 0, maxScroll()));
-    //                 return;
-    //             }
-    //             target = clamp(target + dy, 0, maxScroll());
-    //             start();
-    //         },
-    //         jumpTo(y) {
-    //             if (reduceMotion) {
-    //                 win.scrollTo(0, clamp(y, 0, maxScroll()));
-    //                 return;
-    //             }
-    //             target = clamp(y, 0, maxScroll());
-    //             win.scrollTo(0, Math.round(target));
-    //         },
-    //         resize() {
-    //             target = clamp(target, 0, maxScroll());
-    //             current = clamp(current, 0, maxScroll());
-    //         },
-    //         config(opt = {}) {
-    //             if (typeof opt.damping === "number") DAMPING = opt.damping;
-    //         },
-    //     };
-    // })();
+        return {
+            add(dy) {
+                if (reduceMotion) {
+                    win.scrollTo(0, clamp(win.pageYOffset + dy, 0, maxScroll()));
+                    return;
+                }
+                target = clamp(target + dy, 0, maxScroll());
+                start();
+            },
+            jumpTo(y) {
+                if (reduceMotion) {
+                    win.scrollTo(0, clamp(y, 0, maxScroll()));
+                    return;
+                }
+                target = clamp(y, 0, maxScroll());
+                win.scrollTo(0, Math.round(target));
+            },
+            resize() {
+                target = clamp(target, 0, maxScroll());
+                current = clamp(current, 0, maxScroll());
+            },
+            config(opt = {}) {
+                if (typeof opt.damping === "number") DAMPING = opt.damping;
+            },
+        };
+    })();
 
     // =========================================================
     // 3) 입력 라우터(전역)
     // =========================================================
-    // (function bindRouter() {
-    //     function onWheel(e) {
-    //         if (Intro.ready && Intro.covers()) {
-    //             if (Intro.wheel(e)) return;
-    //         }
-    //         e.preventDefault();
-    //         const dy = e.deltaY;
-    //         Scroller.add(dy);
-    //     }
-    //     let prevY = null;
-    //     function onTouchStart(e) {
-    //         if (Intro.ready) Intro.tstart(e);
-    //         const t = e.touches && e.touches[0];
-    //         prevY = t ? t.clientY : null;
-    //     }
-    //     function onTouchMove(e) {
-    //         if (Intro.ready && Intro.covers()) {
-    //             if (Intro.tmove(e)) return;
-    //         }
-    //         e.preventDefault();
-    //         const t = e.touches && e.touches[0];
-    //         if (!t) {
-    //             prevY = null;
-    //             return;
-    //         }
-    //         if (prevY == null) {
-    //             prevY = t.clientY;
-    //             return;
-    //         }
-    //         const dy = prevY - t.clientY || 0;
-    //         prevY = t.clientY;
-    //         Scroller.add(dy);
-    //     }
-    //     function onTouchEnd(e) {
-    //         if (Intro.ready) Intro.tend(e);
-    //         prevY = null;
-    //     }
-    //     function onResize() {
-    //         Scroller.resize();
-    //         if (Intro.ready) Intro.resize();
-    //     }
+    (function bindRouter() {
+        function onWheel(e) {
+            if (!scrollEnabled) {
+                e.preventDefault(); // 기본 스크롤도 막고
+                return; // 관성 스크롤도 안 태움
+            }
+            if (Intro.ready && Intro.covers()) {
+                if (Intro.wheel(e)) return;
+            }
+            e.preventDefault();
+            const dy = e.deltaY;
+            Scroller.add(dy);
+        }
+        let prevY = null;
+        function onTouchStart(e) {
+            if (Intro.ready) Intro.tstart(e);
+            const t = e.touches && e.touches[0];
+            prevY = t ? t.clientY : null;
+        }
+        function onTouchMove(e) {
+            if (Intro.ready && Intro.covers()) {
+                if (Intro.tmove(e)) return;
+            }
+            e.preventDefault();
+            const t = e.touches && e.touches[0];
+            if (!t) {
+                prevY = null;
+                return;
+            }
+            if (prevY == null) {
+                prevY = t.clientY;
+                return;
+            }
+            const dy = prevY - t.clientY || 0;
+            prevY = t.clientY;
+            Scroller.add(dy);
+        }
+        function onTouchEnd(e) {
+            if (Intro.ready) Intro.tend(e);
+            prevY = null;
+        }
+        function onResize() {
+            Scroller.resize();
+            if (Intro.ready) Intro.resize();
+        }
 
-    //     win.addEventListener("wheel", onWheel, { passive: false });
-    //     win.addEventListener("touchstart", onTouchStart, { passive: true });
-    //     win.addEventListener("touchmove", onTouchMove, { passive: false });
-    //     win.addEventListener("touchend", onTouchEnd, { passive: true });
-    //     win.addEventListener("resize", onResize, { passive: true });
-    // })();
+        win.addEventListener("wheel", onWheel, { passive: false });
+        win.addEventListener("touchstart", onTouchStart, { passive: true });
+        win.addEventListener("touchmove", onTouchMove, { passive: false });
+        win.addEventListener("touchend", onTouchEnd, { passive: true });
+        win.addEventListener("resize", onResize, { passive: true });
+    })();
 
     // =========================================================
     // 4) Sub Visual: Vertical Swiper + 인디케이터 페이드
     //    - 컨테이너: .sub_visual > .sub_visual_content
     //    - 전환: slide(스와이프)
     //    - section 전체 스크롤로 스와이퍼 제어
-    // =========================================================
-    // =========================================================
-    // 4) Sub Visual Module (뷰포트 80% 조건 추가)
     // =========================================================
     (function SubVisualModule() {
         // ----- 헬퍼 함수 (위로 이동) -----
@@ -447,7 +482,7 @@
                 let tStartY = 0,
                     TOUCH_THRESHOLD = 8;
                 $section.off("wheel" + NS).on("wheel" + NS, function (e) {
-                    if (getVisibleRatio($section) < 0.9) return;
+                    if (getVisibleRatio($section) < 0.95) return; // Sub Visual Module (뷰포트의 95% 이상 보여질 떄 작동)
                     const evt = e.originalEvent || e;
                     const dy = evt.deltaY || 0;
                     if (swiper.animating) {

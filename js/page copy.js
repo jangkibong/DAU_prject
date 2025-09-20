@@ -7,12 +7,6 @@
         let lastScrollTop = 0; // 이전 스크롤 값 저장 (스크롤 방향 판단용)
         let snapTregger = 80;
 
-        function scrollBumper() {
-            disableCustomScroll();
-            setTimeout(function () {
-                enableCustomScroll();
-            }, 500);
-        }
 
         $(win).on("scroll", function () {
             const scrollTop = $(win).scrollTop();
@@ -49,6 +43,7 @@
                 }
                 // 🔥 조건: 스크롤 업 + scrollTop이 (섹션 시작위치 + snapTregger)에 도달했을 때
                 if (isScrollUp && snapTregger >= scrollTop - sectionTop && scrollTop > sectionTop) {
+
                     $sections.removeClass("fixedTop");
                     $current.addClass("fixedTop");
                 }
