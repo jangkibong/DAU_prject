@@ -44,11 +44,13 @@
                     scrollTop >= sectionTop - snapTregger &&
                     scrollTop < sectionTop
                 ) {
+                    scrollBumper();
                     $sections.removeClass("fixedTop");
                     $current.addClass("fixedTop");
                 }
                 // 🔥 조건: 스크롤 업 + scrollTop이 (섹션 시작위치 + snapTregger)에 도달했을 때
                 if (isScrollUp && snapTregger >= scrollTop - sectionTop && scrollTop > sectionTop) {
+                    scrollBumper();
                     $sections.removeClass("fixedTop");
                     $current.addClass("fixedTop");
                 }
