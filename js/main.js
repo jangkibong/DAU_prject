@@ -28,6 +28,9 @@
         window.scrollEnabled = true;
     };
 
+    alert("이너", window.innerHeight);
+    alert("아우터", window.outerHeight);
+
     if (!$) return;
 
     // =========================================================
@@ -92,7 +95,7 @@
             titleSpeed: 1.2,
             titleEase: "linear",
             titleFollowImage: true,
-            virtualRangePx: 900,
+            virtualRangePx: window.innerHeight,
             epsilon: 0,
         };
 
