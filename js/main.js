@@ -26,10 +26,10 @@
     };
     window.enableCustomScroll = function () {
         window.scrollEnabled = true;
-    };
+    };W
 
-    alert("이너", window.innerHeight);
-    alert("아우터", window.outerHeight);
+    alert(window.innerHeight);
+    alert(window.outerHeight);
 
     if (!$) return;
 
@@ -235,7 +235,7 @@
         let target = win.pageYOffset;
         let current = target;
         let raf = null;
-        const EPS = 0.2;
+        const EPS = 0.4;
         let DAMPING = 0.14;
 
         function start() {
