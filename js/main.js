@@ -26,7 +26,7 @@
     };
     window.enableCustomScroll = function () {
         window.scrollEnabled = true;
-    };W
+    };
 
     alert(window.innerHeight);
     alert(window.outerHeight);
