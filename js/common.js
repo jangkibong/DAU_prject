@@ -1,13 +1,13 @@
 $(function () {
-    var $win = $(window);
-    var $header = $("header"); // 프로젝트 헤더 선택자에 맞춰 조정
-    var $menu = $(".menu"); // 오버레이/사이드 메뉴 래퍼
-    var $btnMenuOpen = $(".btn_menu");
-    var $btnMenuClose = $(".btn_menu_close");
+    const $win = $(window);
+    const $header = $("header"); // 프로젝트 헤더 선택자에 맞춰 조정
+    const $menu = $(".menu"); // 오버레이/사이드 메뉴 래퍼
+    const $btnMenuOpen = $(".btn_menu");
+    const $btnMenuClose = $(".btn_menu_close");
 
-    var lastScrollTop = 0;
-    var delta = 5; // 미세 스크롤 무시 임계값(px)
-    var lock = false; // rAF 쓰는 간단한 쓰로틀
+    let lastScrollTop = 0;
+    let delta = 5; // 미세 스크롤 무시 임계값(px)
+    let lock = false; // rAF 쓰는 간단한 쓰로틀
 
     // ===== 헤더 보이기/숨기기 =====
     function hideHeader() {
@@ -23,14 +23,17 @@ $(function () {
 
     // 스크롤 핸들러 (방향 감지)
     function onScroll() {
-        var st = $win.scrollTop();
+        const st = $win.scrollTop();
+        console.log(st);
+        console.log(lastScrollTop)
 
         // 작은 움직임 무시
         if (Math.abs(st - lastScrollTop) <= delta) {
             lock = false;
             return;
         }
-        if ($header.hasClass("is-hidden")) {
+
+        if (!$header.hasClass("is-open")) {
             if (st > lastScrollTop && st > 50) {
                 // 스크롤 다운: 헤더 페이드 아웃 + 위로 숨김
                 hideHeader();
@@ -62,12 +65,14 @@ $(function () {
         $("body").addClass("no-scroll");
         // 접근성: 필요시 aria
         $menu.attr("aria-hidden", "false");
+        $header.addClass("is-open");
     }
     function closeMenu() {
         $menu.stop(true, true).fadeOut(200, function () {
             $("body").removeClass("no-scroll");
         });
         $menu.attr("aria-hidden", "true");
+        $header.removeClass("is-open");
     }
 
     $btnMenuOpen.on("click", openMenu);

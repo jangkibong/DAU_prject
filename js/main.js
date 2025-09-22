@@ -28,9 +28,6 @@
         window.scrollEnabled = true;
     };
 
-    alert(window.innerHeight);
-    alert(window.outerHeight);
-
     if (!$) return;
 
     // =========================================================
@@ -485,7 +482,9 @@
                 let tStartY = 0,
                     TOUCH_THRESHOLD = 8;
                 $section.off("wheel" + NS).on("wheel" + NS, function (e) {
-                    if (getVisibleRatio($section) < 0.95) return; // Sub Visual Module (뷰포트의 95% 이상 보여질 떄 작동)
+                    const $article = $section.find(".sub_visual")
+
+                    if (getVisibleRatio($article) < 0.95) return; // Sub Visual Module (뷰포트의 95% 이상 보여질 떄 작동)
                     const evt = e.originalEvent || e;
                     const dy = evt.deltaY || 0;
                     if (swiper.animating) {
@@ -882,7 +881,7 @@
         const prSwiper = new Swiper(prHost, {
             direction: "horizontal",
             slidesPerView: "auto",
-            spaceBetween: 160,
+            spaceBetween: 70,
             centeredSlides: false,
             loop: false,
             speed: 600,
@@ -895,6 +894,11 @@
             navigation: {
                 prevEl: ".btn_prev",
                 nextEl: ".btn_next",
+            },
+            breakpoints: {
+                720: {
+                    spaceBetween: 160,
+                },
             },
             on: {
                 init() {
