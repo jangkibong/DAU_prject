@@ -232,7 +232,7 @@
         let target = win.pageYOffset;
         let current = target;
         let raf = null;
-        const EPS = 0.4;
+        const EPS = 0.5;
         let DAMPING = 0.14;
 
         function start() {
@@ -484,7 +484,7 @@
                 $section.off("wheel" + NS).on("wheel" + NS, function (e) {
                     const $article = $section.find(".sub_visual")
 
-                    if (getVisibleRatio($article) < 0.95) return; // Sub Visual Module (뷰포트의 95% 이상 보여질 떄 작동)
+                    if (getVisibleRatio($article) < 1) return; // Sub Visual Module (뷰포트의 95% 이상 보여질 떄 작동)
                     const evt = e.originalEvent || e;
                     const dy = evt.deltaY || 0;
                     if (swiper.animating) {
