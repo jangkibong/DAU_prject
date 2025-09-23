@@ -710,9 +710,6 @@ body {
     .section.fullpage.mo_snap_none {
         margin-top: 50px;
     }
-    .section.fullpage.mo_snap_none article{
-        position: static;
-    }
 
     .sub_visual h3 {
         font-size: 1.4rem;
