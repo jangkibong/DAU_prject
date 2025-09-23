@@ -519,7 +519,7 @@
 
                     // if (win.innerWidth > 720) return; // Sub Visual Module (뷰포트의 95% 이상 보여질 떄 작동)
                     if (getVisibleRatio($article) < 1 ) return; // Sub Visual Module (뷰포트의 95% 이상 보여질 떄 작동)
-                    if(!$section.hasClass("fixedBottom") || !$section.hasClass("fixedTop")) return;
+
                     const evt = e.originalEvent || e;
                     const dy = evt.deltaY || 0;
                     if (swiper.animating) {
