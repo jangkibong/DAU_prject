@@ -13,8 +13,8 @@
         let scrollbuffer = $(win).innerHeight() * 0.5; // 뷰포트의 50%
 
         if(win.innerWidth < 720) {
-            scrollbuffer = $(win).innerHeight() * 0.2; // 뷰포트의 50%
-
+            scrollbuffer = $(win).innerHeight() * 0.15; // 뷰포트의 50%
+            snapTregger = 200;
         }
         $sections.css({paddingBottom: scrollbuffer})
 
