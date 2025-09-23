@@ -114,7 +114,7 @@
                 titleSpeed: 1.2,
                 titleEase: "linear",
                 titleFollowImage: true,
-                virtualRangePx: 400,
+                virtualRangePx: 300,
                 epsilon: 0,
             };
         }
@@ -347,7 +347,7 @@
             // 모바일 화면 크기일 때 스크롤 양 조절
             // ------------------------------
             if (window.innerWidth <= 720) {
-                dy *= 2; // 1.5배 늘림 (원하는 배수로 조정 가능)
+                dy *= 1.5; // 1.5배 늘림 (원하는 배수로 조정 가능)
             }
 
             Scroller.add(dy);
