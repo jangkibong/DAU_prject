@@ -503,6 +503,7 @@ footer {
     .footer_body {
     }
     .footer_logo {
+        height: 2.02rem;
     }
     .footer_note {
         text-align: left;
@@ -510,15 +511,20 @@ footer {
     .footer_content {
         width: 100%;
     }
+    .footer_info_content{
+        display: block;
+    }
     .footer_info_content,
     .footer_copy {
         font-size: 0.75rem;
+        line-height: 2;
     }
 }
 
 @media (max-width: 30em) {
     /* 480px */
     .footer_head {
+
     }
     .footer_cta {
     }
