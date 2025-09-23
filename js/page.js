@@ -37,9 +37,7 @@
                 );
             });
 
-            if(win.innerWidth < 720) {
-                $current.hasClass()
-            }
+            if(win.innerWidth < 720 && $current.hasClass("mo_snap_none")) return;
             if(scrollTop < $firstSection.offset().top){
                 // console.log('처음 섹션');
                 $sections.removeClass("fixedTop");
@@ -105,10 +103,11 @@
 
             // 현재 스크롤 값을 마지막 값으로 저장
             lastScrollTop = scrollTop;
+
+            $(win).on("resize", function(){
+                $sections.css({paddingBottom: scrollbuffer})
+            });
         });
 
-        $(win).on("resize", function(){
-            $sections.css({paddingBottom: scrollbuffer})
-        });
     });
 })(jQuery, window, document);
