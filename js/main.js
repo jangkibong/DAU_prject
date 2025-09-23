@@ -97,27 +97,27 @@
             epsilon: 0,
         };
 
-        if($win.innerWidth <= 720) {
-            CFG = {
-                imgScaleFrom: 1.0,
-                imgScaleTo: 0.55,
-                imgYFromVH: 0,
-                imgYToVH: -45,
+        // if($win.innerWidth <= 720) {
+        //     CFG = {
+        //         imgScaleFrom: 1.0,
+        //         imgScaleTo: 0.55,
+        //         imgYFromVH: 0,
+        //         imgYToVH: -45,
 
-                imgScaleSpeed: 2.2,
-                imgScaleEase: "easeOutCubic",
-                imgMoveSpeed: 1,
-                imgMoveEase: "linear",
+        //         imgScaleSpeed: 2.2,
+        //         imgScaleEase: "easeOutCubic",
+        //         imgMoveSpeed: 1,
+        //         imgMoveEase: "linear",
 
-                titleTopFromVH: 95,
-                titleTopToVH: 20,
-                titleSpeed: 1.2,
-                titleEase: "linear",
-                titleFollowImage: true,
-                virtualRangePx: 300,
-                epsilon: 0,
-            };
-        }
+        //         titleTopFromVH: 95,
+        //         titleTopToVH: 20,
+        //         titleSpeed: 1.2,
+        //         titleEase: "linear",
+        //         titleFollowImage: true,
+        //         virtualRangePx: 300,
+        //         epsilon: 0,
+        //     };
+        // }
 
         const clamp01 = (v) => Math.max(0, Math.min(1, v));
         const lerp = (a, b, t) => a + (b - a) * t;
@@ -519,6 +519,7 @@
 
                     // if (win.innerWidth > 720) return; // Sub Visual Module (뷰포트의 95% 이상 보여질 떄 작동)
                     if (getVisibleRatio($article) < 1 ) return; // Sub Visual Module (뷰포트의 95% 이상 보여질 떄 작동)
+                    if(!$section.hasClass("fixedBottom") || !$section.hasClass("fixedTop")) return;
                     const evt = e.originalEvent || e;
                     const dy = evt.deltaY || 0;
                     if (swiper.animating) {
