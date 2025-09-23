@@ -14,7 +14,7 @@
 
         if(win.innerWidth < 720) {
             scrollbuffer = 0; // 뷰포트의 50%
-            snapTregger = 50;
+            snapTregger = 100;
         }
         $sections.css({paddingBottom: scrollbuffer})
 
