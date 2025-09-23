@@ -347,6 +347,7 @@
     (function SubVisualModule() {
         // ----- 헬퍼 함수 (위로 이동) -----
         function getVisibleRatio($el) {
+            // if (win.innerWidth < 720) return;
             if (!$el.length) return 0;
             const rect = $el[0].getBoundingClientRect();
             const vh = window.innerHeight || document.documentElement.clientHeight;
@@ -461,6 +462,8 @@
                     observeParents: true,
                     touchAngle: 45,
                     preventInteractionOnTransition: true,
+                    resistanceRatio: 0,        // 끝에서 바운스 효과 제거
+                    touchReleaseOnEdges: true, // 끝에서 스와이프 시 그냥 멈추게 함
                     a11y: { enabled: true },
                     on: {
                         afterInit(sw) {
@@ -484,7 +487,8 @@
                 $section.off("wheel" + NS).on("wheel" + NS, function (e) {
                     const $article = $section.find(".sub_visual")
 
-                    if (getVisibleRatio($article) < 1) return; // Sub Visual Module (뷰포트의 95% 이상 보여질 떄 작동)
+                    // if (win.innerWidth > 720) return; // Sub Visual Module (뷰포트의 95% 이상 보여질 떄 작동)
+                    if (getVisibleRatio($article) < 1 ) return; // Sub Visual Module (뷰포트의 95% 이상 보여질 떄 작동)
                     const evt = e.originalEvent || e;
                     const dy = evt.deltaY || 0;
                     if (swiper.animating) {

@@ -2,6 +2,7 @@
 // 스크롤 다운 시 현재 scrollTop 값이 섹션 시작위치 -100px에 도달하면 "스냅"
 // -----------------------------------------------------
 (function ($, win, doc) {
+    // if(win.innerWidth < 720) return;
     $(function () {
         const $sections = $(".section.fullpage");
         const $firstSection = $sections.eq(0);
@@ -10,6 +11,12 @@
         let lastScrollTop = 0; // 이전 스크롤 값 저장 (스크롤 방향 판단용)
         let snapTregger = 50;
         let scrollbuffer = $(win).innerHeight() * 0.5; // 뷰포트의 50%
+
+        if(win.innerWidth < 720) {
+            scrollbuffer = $(win).innerHeight() * 0.2; // 뷰포트의 50%
+
+        }
+        $sections.css({paddingBottom: scrollbuffer})
 
         $(win).on("scroll", function () {
             const scrollTop = $(win).scrollTop(); // 현재 스크롤 위치
