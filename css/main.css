@@ -704,6 +704,12 @@ body {
     .section .main_title .slogan {
         top: -1em;
     }
+    .section.fullpage {
+        height: calc(var(--vh, 1vh) * 100);
+    }
+    .section.fullpage.mo_snap_none {
+        margin-top: 50px;
+    }
 
     .sub_visual h3 {
         font-size: 1.4rem;

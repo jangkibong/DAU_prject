@@ -2,15 +2,21 @@
 // 스크롤 다운 시 현재 scrollTop 값이 섹션 시작위치 -100px에 도달하면 "스냅"
 // -----------------------------------------------------
 (function ($, win, doc) {
-
+    // if(win.innerWidth < 720) return;
     $(function () {
         const $sections = $(".section.fullpage");
         const $firstSection = $sections.eq(0);
         const $lastSection = $sections.last();
 
         let lastScrollTop = 0; // 이전 스크롤 값 저장 (스크롤 방향 판단용)
-        let snapTregger = 100;
+        let snapTregger = 50;
         let scrollbuffer = $(win).innerHeight() * 0.5; // 뷰포트의 50%
+
+        if(win.innerWidth < 720) {
+            scrollbuffer = 0; // 뷰포트의 50%
+            snapTregger = 100;
+        }
+        $sections.css({paddingBottom: scrollbuffer})
 
         $(win).on("scroll", function () {
             const scrollTop = $(win).scrollTop(); // 현재 스크롤 위치
@@ -31,6 +37,7 @@
                 );
             });
 
+            if(win.innerWidth < 720 && $current.hasClass("mo_snap_none")) return;
             if(scrollTop < $firstSection.offset().top){
                 // console.log('처음 섹션');
                 $sections.removeClass("fixedTop");
@@ -96,6 +103,11 @@
 
             // 현재 스크롤 값을 마지막 값으로 저장
             lastScrollTop = scrollTop;
+
+            $(win).on("resize", function(){
+                $sections.css({paddingBottom: scrollbuffer})
+            });
         });
+
     });
 })(jQuery, window, document);

@@ -4,6 +4,7 @@ $(function () {
     const $menu = $(".menu"); // 오버레이/사이드 메뉴 래퍼
     const $btnMenuOpen = $(".btn_menu");
     const $btnMenuClose = $(".btn_menu_close");
+    const $subMenu = $(".sub_menu")
 
     let lastScrollTop = 0;
     let delta = 5; // 미세 스크롤 무시 임계값(px)
@@ -24,8 +25,6 @@ $(function () {
     // 스크롤 핸들러 (방향 감지)
     function onScroll() {
         const st = $win.scrollTop();
-        console.log(st);
-        console.log(lastScrollTop)
 
         // 작은 움직임 무시
         if (Math.abs(st - lastScrollTop) <= delta) {
@@ -67,6 +66,7 @@ $(function () {
         $menu.attr("aria-hidden", "false");
         $header.addClass("is-open");
     }
+
     function closeMenu() {
         $menu.stop(true, true).fadeOut(200, function () {
             $("body").removeClass("no-scroll");
@@ -77,13 +77,9 @@ $(function () {
 
     $btnMenuOpen.on("click", openMenu);
     $btnMenuClose.on("click", closeMenu);
-
-    // 오버레이 클릭으로 닫기 (오버레이가 .menu 자체라면 내부 컨텐츠 래퍼에 .menu__panel 주고 분기)
-    $menu.on("click", function (e) {
+    $subMenu.on("click", function (e) {
         // 패널 영역 클릭은 유지, 바깥(오버레이) 클릭만 닫기
-        if ($(e.target).closest(".menu__panel").length === 0) {
-            closeMenu();
-        }
+        closeMenu();
     });
 
     // ESC 키로 닫기
