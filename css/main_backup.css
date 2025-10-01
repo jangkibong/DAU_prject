@@ -450,11 +450,11 @@ body {
 }
 .swiper_wrap .swiper-button-prev {
     left: 1.25rem;
-    background-image: url(../images/common/swiper_btn_left.png);
+    background-image: url(../images/common/swiper_btn_left.svg);
 }
 .swiper_wrap .swiper-button-next {
     right: 1.25rem;
-    background-image: url(../images/common/swiper_btn_right.png);
+    background-image: url(../images/common/swiper_btn_right.svg);
 }
 .swiper_wrap .swiper-button-prev::after,
 .swiper_wrap .swiper-button-next::after {
@@ -602,17 +602,17 @@ body {
     background-repeat: no-repeat;
 }
 .control .btn_prev {
-    background-image: url(../images/common/swiper_btn_arrow_left.png);
+    background-image: url(../images/common/swiper_btn_arrow_left.svg);
 }
 .control .btn_next {
-    background-image: url(../images/common/swiper_btn_arrow_right.png);
+    background-image: url(../images/common/swiper_btn_arrow_right.svg);
 }
 
 .control .btn_prev.swiper-button-disabled {
-    background-image: url(../images/common/swiper_btn_arrow_left_disabled.png);
+    background-image: url(../images/common/swiper_btn_arrow_left_disabled.svg);
 }
 .control .btn_next.swiper-button-disabled {
-    background-image: url(../images/common/swiper_btn_arrow_right_disabled.png);
+    background-image: url(../images/common/swiper_btn_arrow_right_disabled.svg);
 }
 
 @media screen and (max-width: 1720px) and (min-width: 561px) {

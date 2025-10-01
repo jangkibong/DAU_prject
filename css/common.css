@@ -335,7 +335,7 @@ footer {
     width: 1.5em; /* 24px */
     height: 1.5em; /* 24px */
     text-indent: -9999px;
-    background-image: url(../images/common/btn_download.png);
+    background-image: url(../images/common/btn_download.svg);
     background-size: contain;
     background-repeat: no-repeat;
 }

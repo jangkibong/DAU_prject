@@ -482,7 +482,7 @@
                 let tStartY = 0,
                     TOUCH_THRESHOLD = 8;
                 $section.off("wheel" + NS).on("wheel" + NS, function (e) {
-                    const $article = $section.find(".sub_visual")
+                    const $article = $section.find(".sub_visual");
 
                     if (getVisibleRatio($article) < 1) return; // Sub Visual Module (뷰포트의 95% 이상 보여질 떄 작동)
                     const evt = e.originalEvent || e;
@@ -927,17 +927,17 @@ $(function () {
         if ($(window).width() <= 720) {
             // 모바일용
             $intro.attr("src", "./images/main/mo_all_source_down.mp4");
-            $subVisualImg.eq(0).attr("src", "./images/main/sub_visual_mo_1.png");
-            $subVisualImg.eq(1).attr("src", "./images/main/sub_visual_mo_2.png");
-            $subVisualImg.eq(2).attr("src", "./images/main/sub_visual_mo_3.png");
-            $subVisualImg.eq(3).attr("src", "./images/main/sub_visual_mo_4.png");
+            $subVisualImg.eq(0).attr("src", "./images/main/sub_visual_mo_1.svg");
+            $subVisualImg.eq(1).attr("src", "./images/main/sub_visual_mo_2.svg");
+            $subVisualImg.eq(2).attr("src", "./images/main/sub_visual_mo_3.svg");
+            $subVisualImg.eq(3).attr("src", "./images/main/sub_visual_mo_4.svg");
         } else {
             // PC용
             $intro.attr("src", "./images/main/pc_all_source_down.mp4");
-            $subVisualImg.eq(0).attr("src", "./images/main/sub_visual_1.png");
-            $subVisualImg.eq(1).attr("src", "./images/main/sub_visual_2.png");
-            $subVisualImg.eq(2).attr("src", "./images/main/sub_visual_3.png");
-            $subVisualImg.eq(3).attr("src", "./images/main/sub_visual_4.png");
+            $subVisualImg.eq(0).attr("src", "./images/main/sub_visual_1.svg");
+            $subVisualImg.eq(1).attr("src", "./images/main/sub_visual_2.svg");
+            $subVisualImg.eq(2).attr("src", "./images/main/sub_visual_3.svg");
+            $subVisualImg.eq(3).attr("src", "./images/main/sub_visual_4.svg");
         }
     };
 
